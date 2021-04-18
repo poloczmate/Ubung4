@@ -2,13 +2,17 @@ package newsanalyzer.ctrl;
 
 import newsapi.NewsApi;
 import newsapi.NewsApiBuilder;
+import newsapi.NewsApiException;
 import newsapi.beans.Article;
 import newsapi.beans.NewsReponse;
+import newsapi.beans.Source;
 import newsapi.enums.Category;
 import newsapi.enums.Country;
 import newsapi.enums.Endpoint;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Controller {
 
@@ -16,24 +20,36 @@ public class Controller {
 
 	public void process(Endpoint endpoint, String qValue, Country country, Category category) {
 		System.out.println("Start process");
-		NewsApi newsApi = new NewsApiBuilder()
-				.setApiKey(APIKEY)
-				.setEndPoint(endpoint)
-				.setQ(qValue)
-				.setSourceCountry(country)
-				.setSourceCategory(category)
-				.createNewsApi();
-		NewsReponse newsResponse = newsApi.getNews();
-		if (newsResponse != null){
+
+		try {
+			NewsApi newsApi = new NewsApiBuilder()
+					.setApiKey(APIKEY)
+					.setEndPoint(endpoint)
+					.setQ(qValue)
+					.setSourceCountry(country)
+					.setSourceCategory(category)
+					.createNewsApi();
+			NewsReponse newsResponse = newsApi.getNews();
+			if (newsResponse == null) throw new NewsApiException("No response");
+			if (newsResponse.getStatus().equals("error")){
+				throw new NewsApiException("Status is error!");
+			}
+			//TODO implement Error handling
+
+			//TODO implement methods for analysis
 			List<Article> articles = newsResponse.getArticles();
 			articles.stream().forEach(article -> System.out.println(article.toString()));
+
+			System.out.println("Anzahl der Artikel: " + articles.stream().count());
+			Map<String, Long> map = articles.stream().collect(Collectors.groupingBy(Article::getSourceName, Collectors.counting()));
+			Optional<Map.Entry<String, Long>> a = map.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue));
+			System.out.println("Provider mit meisten Artikel: " + a.get().getKey());
+			Collections.sort(articles, Comparator.comparing(Article::getAuthor));
+			System.out.println("Author mit kürzesten Name: " + articles.get(0).getAuthor());
+			Collections.sort(articles, Comparator.comparing(Article::getTitle));
+		}catch (NewsApiException e){
+			System.out.println(e.getMessage());
 		}
-
-		//TODO implement Error handling
-
-		//TODO load the news based on the parameters
-
-		//TODO implement methods for analysis
 
 		System.out.println("End process");
 	}

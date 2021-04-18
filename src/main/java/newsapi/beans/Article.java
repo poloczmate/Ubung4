@@ -77,6 +77,8 @@ public class Article {
         return source;
     }
 
+    public String getSourceName(){return source.getName();}
+
     @JsonProperty("source")
     public void setSource(Source source) {
         this.source = source;
