@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import newsanalyzer.ctrl.Controller;
+import newsapi.NewsApi;
+import newsapi.NewsApiBuilder;
+import newsapi.enums.Category;
+import newsapi.enums.Country;
+import newsapi.enums.Endpoint;
 
 public class UserInterface 
 {
@@ -13,16 +18,15 @@ public class UserInterface
 	private Controller ctrl = new Controller();
 
 	public void getDataFromCtrl1(){
-		System.out.println("ABC");
-
-		ctrl.process();
+		ctrl.process(Endpoint.TOP_HEADLINES, "Fußball", Country.de, Category.sports);
 	}
 
 	public void getDataFromCtrl2(){
+		ctrl.process(Endpoint.TOP_HEADLINES, "", Country.at, Category.general);
 	}
 
 	public void getDataFromCtrl3(){
-
+		ctrl.process(Endpoint.TOP_HEADLINES, "korona", Country.hu, Category.health);
 	}
 	
 	public void getDataForCustomInput() {
@@ -31,11 +35,11 @@ public class UserInterface
 
 
 	public void start() {
-		Menu<Runnable> menu = new Menu<>("User Interfacx");
+		Menu<Runnable> menu = new Menu<>("User Interface");
 		menu.setTitel("Wählen Sie aus:");
-		menu.insert("a", "Choice ABC", this::getDataFromCtrl1);
-		menu.insert("b", "Choice DEF", this::getDataFromCtrl2);
-		menu.insert("c", "Choice 3", this::getDataFromCtrl3);
+		menu.insert("a", "Fußball Nachrichten aus Deutschland", this::getDataFromCtrl1);
+		menu.insert("b", "Algemeine Nachrichten aus Österreich", this::getDataFromCtrl2);
+		menu.insert("c", "Corona Nachrichten aus Ungarn", this::getDataFromCtrl3);
 		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
