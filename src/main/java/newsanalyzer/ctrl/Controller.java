@@ -38,14 +38,17 @@ public class Controller {
 
 			//TODO implement methods for analysis
 			List<Article> articles = newsResponse.getArticles();
+			if(articles.size() == 0) throw new NewsApiException("No articles found");
 			articles.stream().forEach(article -> System.out.println(article.toString()));
 
 			System.out.println("Anzahl der Artikel: " + articles.stream().count());
 			Map<String, Long> map = articles.stream().collect(Collectors.groupingBy(Article::getSourceName, Collectors.counting()));
 			Optional<Map.Entry<String, Long>> a = map.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue));
 			System.out.println("Provider mit meisten Artikel: " + a.get().getKey());
+
 			Collections.sort(articles, Comparator.comparing(Article::getAuthor));
 			System.out.println("Author mit kürzesten Name: " + articles.get(0).getAuthor());
+
 			Collections.sort(articles, Comparator.comparing(Article::getTitle));
 		}catch (NewsApiException e){
 			System.out.println(e.getMessage());

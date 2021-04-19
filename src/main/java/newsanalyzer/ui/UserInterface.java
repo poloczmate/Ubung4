@@ -4,13 +4,20 @@ package newsanalyzer.ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Scanner;
+import java.util.stream.Stream;
 
 import newsanalyzer.ctrl.Controller;
 import newsapi.NewsApi;
 import newsapi.NewsApiBuilder;
+import newsapi.NewsApiException;
 import newsapi.enums.Category;
 import newsapi.enums.Country;
 import newsapi.enums.Endpoint;
+
+import static org.json.JSONObject.getNames;
 
 public class UserInterface 
 {
@@ -30,7 +37,34 @@ public class UserInterface
 	}
 	
 	public void getDataForCustomInput() {
-		
+		Country country;
+		Category category;
+		Scanner scan = new Scanner(System.in);
+		try {
+			System.out.print("Wählen Sie ein Land (2 Char Code):");
+			String choice = scan.nextLine();
+			choice = choice.toLowerCase(Locale.ROOT);
+			if (choice.length() != 2) throw new NewsApiException("No country like that!");
+			String[] names = Country.names();
+			if (!Arrays.asList(names).contains(choice)) throw new NewsApiException("No country like that!");
+			country = Country.valueOf(choice);
+
+			System.out.print("Wählen Sie eine Kategorie: (health, business, entertainment, general, science, sports, technology)");
+			choice = scan.nextLine();
+			choice = choice.toLowerCase(Locale.ROOT);
+			names = Category.names();
+			if (!Arrays.asList(names).contains(choice)) throw new NewsApiException("No category like that!");
+			category = Category.valueOf(choice);
+
+			System.out.print("Geben Sie ein Keyword ein:");
+			choice = scan.nextLine();
+
+			ctrl.process(Endpoint.TOP_HEADLINES, choice, country, category);
+
+		}catch (NewsApiException e){
+			System.out.println(e.getMessage());
+		}
+
 	}
 
 
