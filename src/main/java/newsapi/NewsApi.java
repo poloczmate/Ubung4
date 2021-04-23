@@ -8,6 +8,7 @@ import newsapi.enums.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class NewsApi {
@@ -104,15 +105,15 @@ public class NewsApi {
         this.endpoint = endpoint;
     }
 
-    protected String requestData() {
+    protected String requestData() throws NewsApiException {
         String url = buildURL();
         System.out.println("URL: "+url);
         URL obj = null;
         try {
             obj = new URL(url);
         } catch (MalformedURLException e) {
-            // TOOO improve ErrorHandling
-            e.printStackTrace();
+            // TODO improve ErrorHandling
+            throw new NewsApiException("URL Problem");
         }
         HttpURLConnection con;
         StringBuilder response = new StringBuilder();
@@ -126,15 +127,16 @@ public class NewsApi {
             in.close();
         } catch (IOException e) {
             // TODO improve ErrorHandling
-            System.out.println("Error "+e.getMessage());
+            //System.out.println("Error "+e.getMessage());
+            throw new NewsApiException("JSON Problem");
         }
         return response.toString();
     }
 
     protected String buildURL() {
-        // TODO ErrorHandling
         String urlbase = String.format(NEWS_API_URL,getEndpoint().getValue(),getQ(),getApiKey());
         StringBuilder sb = new StringBuilder(urlbase);
+
 
         if(getFrom() != null){
             sb.append(DELIMITER).append("from=").append(getFrom());
@@ -169,12 +171,19 @@ public class NewsApi {
         if(getSortBy() != null){
             sb.append(DELIMITER).append("sortBy=").append(getSortBy());
         }
+
+
         return sb.toString();
     }
 
-    public NewsReponse getNews() {
+    public NewsReponse getNews(){
         NewsReponse newsReponse = null;
-        String jsonResponse = requestData();
+        String jsonResponse = null;
+        try {
+            jsonResponse = requestData();
+        } catch (NewsApiException e) {
+            System.out.println(e.getMessage());
+        }
         if(jsonResponse != null && !jsonResponse.isEmpty()){
 
             ObjectMapper objectMapper = new ObjectMapper();

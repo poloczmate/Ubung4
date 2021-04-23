@@ -29,7 +29,7 @@ public class UserInterface
 	}
 
 	public void getDataFromCtrl2(){
-		ctrl.process(Endpoint.TOP_HEADLINES, "", Country.at, Category.general);
+		ctrl.process(Endpoint.TOP_HEADLINES, "", Country.fr, Category.general);
 	}
 
 	public void getDataFromCtrl3(){
@@ -72,7 +72,7 @@ public class UserInterface
 		Menu<Runnable> menu = new Menu<>("User Interface");
 		menu.setTitel("Wählen Sie aus:");
 		menu.insert("a", "Fußball Nachrichten aus Deutschland", this::getDataFromCtrl1);
-		menu.insert("b", "Algemeine Nachrichten aus Österreich", this::getDataFromCtrl2);
+		menu.insert("b", "Algemeine Nachrichten aus Frankreich", this::getDataFromCtrl2);
 		menu.insert("c", "Corona Nachrichten aus Ungarn", this::getDataFromCtrl3);
 		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
 		menu.insert("q", "Quit", null);
