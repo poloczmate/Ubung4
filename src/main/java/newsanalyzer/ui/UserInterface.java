@@ -16,6 +16,9 @@ import newsapi.NewsApiException;
 import newsapi.enums.Category;
 import newsapi.enums.Country;
 import newsapi.enums.Endpoint;
+import newsreader.downloader.Downloader;
+import newsreader.downloader.ParallelDownloader;
+import newsreader.downloader.SequentialDownloader;
 
 import static org.json.JSONObject.getNames;
 
@@ -68,10 +71,14 @@ public class UserInterface
 
 	public void downloadSequentially(){
 		System.out.println("Download Sequentially");
+		Downloader sd = new SequentialDownloader();
+		ctrl.downloadArticles(sd);
 	}
 
 	public void downloadParallel(){
 		System.out.println("Download Parallel");
+		Downloader pd = new ParallelDownloader();
+		ctrl.downloadArticles(pd);
 	}
 
 
@@ -82,8 +89,8 @@ public class UserInterface
 		menu.insert("b", "Algemeine Nachrichten aus Frankreich", this::getDataFromCtrl2);
 		menu.insert("c", "Corona Nachrichten aus Ungarn", this::getDataFromCtrl3);
 		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
-		menu.insert("e", "Download last search sequentially:",this::getDataForCustomInput);
-		menu.insert("f", "Download last search parallel:",this::getDataForCustomInput);
+		menu.insert("e", "Download last search sequentially:",this::downloadSequentially);
+		menu.insert("f", "Download last search parallel:",this::downloadParallel);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
 		while ((choice = menu.exec()) != null) {

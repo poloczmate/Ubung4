@@ -9,12 +9,15 @@ import newsapi.beans.Source;
 import newsapi.enums.Category;
 import newsapi.enums.Country;
 import newsapi.enums.Endpoint;
+import newsreader.downloader.Downloader;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Controller {
+
+	private List<Article> last;
 
 	public static final String APIKEY = "90dc8a555be74ebb98621345c5d99166";
 
@@ -36,6 +39,7 @@ public class Controller {
 			}
 			//TODO implement Error handling?
 			List<Article> articles = newsResponse.getArticles();
+			last = articles;
 
 			if(articles.size() == 0) throw new NewsApiException("No articles found");
 			articles.stream().forEach(article -> System.out.println(article.toString()));
@@ -59,7 +63,21 @@ public class Controller {
 
 		System.out.println("End process");
 	}
-	
+
+
+	public List<String> saveURLs(){
+		List<String> toReturn = last.stream().map(Article::getUrl).collect(Collectors.toList());
+		return toReturn;
+	}
+
+	public void downloadArticles(Downloader d){
+		List<String> URLs = saveURLs();
+		long startTime = System.nanoTime();
+		d.process(URLs);
+		long endTime = System.nanoTime();
+		long timeElapsed = endTime - startTime;
+		System.out.println("Time elapsed: " + timeElapsed/1000000000 + " seconds");
+	}
 
 	public Object getData() {
 		
