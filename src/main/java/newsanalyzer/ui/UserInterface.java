@@ -64,7 +64,14 @@ public class UserInterface
 		}catch (NewsApiException e){
 			System.out.println(e.getMessage());
 		}
+	}
 
+	public void downloadSequentially(){
+		System.out.println("Download Sequentially");
+	}
+
+	public void downloadParallel(){
+		System.out.println("Download Parallel");
 	}
 
 
@@ -75,6 +82,8 @@ public class UserInterface
 		menu.insert("b", "Algemeine Nachrichten aus Frankreich", this::getDataFromCtrl2);
 		menu.insert("c", "Corona Nachrichten aus Ungarn", this::getDataFromCtrl3);
 		menu.insert("d", "Choice User Imput:",this::getDataForCustomInput);
+		menu.insert("e", "Download last search sequentially:",this::getDataForCustomInput);
+		menu.insert("f", "Download last search parallel:",this::getDataForCustomInput);
 		menu.insert("q", "Quit", null);
 		Runnable choice;
 		while ((choice = menu.exec()) != null) {
