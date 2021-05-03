@@ -64,14 +64,8 @@ public class Controller {
 		System.out.println("End process");
 	}
 
-
-	public List<String> saveURLs(){
-		List<String> toReturn = last.stream().map(Article::getUrl).collect(Collectors.toList());
-		return toReturn;
-	}
-
 	public void downloadArticles(Downloader d){
-		List<String> URLs = saveURLs();
+		List<String> URLs = last.stream().map(Article::getUrl).filter(o -> o != null).collect(Collectors.toList());
 		long startTime = System.nanoTime();
 		d.process(URLs);
 		long endTime = System.nanoTime();

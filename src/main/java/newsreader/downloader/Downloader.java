@@ -23,6 +23,7 @@ public abstract class Downloader {
             URL url4download = new URL(urlString);
             is = url4download.openStream();
 
+
             fileName = urlString.substring(urlString.lastIndexOf('/') + 1);
             if (fileName.isEmpty()) {
                 fileName = url4download.getHost() + HTML_EXTENTION;
